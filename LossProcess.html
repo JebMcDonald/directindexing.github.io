@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Tax Loss Harvesting Actually Works</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: #2c3e50;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 400;
+        }
+        
+        .process-container {
+            padding: 40px;
+        }
+        
+        .scenario-setup {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .scenario-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .timeline-step {
+            background: white;
+            border: 3px solid #4ecdc4;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4ecdc4;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .step-detail {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            border-left: 5px solid #4ecdc4;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stock-card {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .stock-winner {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .stock-loser {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .stock-replacement {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .stock-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .action-arrow {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2em;
+            color: #4ecdc4;
+        }
+        
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .portfolio-state {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .portfolio-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .before { border-top: 4px solid #e74c3c; }
+        .after { border-top: 4px solid #27ae60; }
+        
+        .benefit-box {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .benefit-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .benefit-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .wash-sale-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .wash-sale-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .timeline::before {
+                display: none;
+            }
+            
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>How Tax Loss Harvesting Actually Works</h1>
+            <p>The step-by-step process of capturing losses while maintaining market exposure</p>
+        </div>
+        
+        <div class="process-container">
+            <div class="scenario-setup">
+                <div class="scenario-title">Example Scenario</div>
+                <p>You own individual stocks in the S&P 500. The market has been volatile - some stocks are up, others are down. You want to capture tax losses without missing out on market participation.</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-step">1</div>
+                <div class="timeline-step">2</div>
+                <div class="timeline-step">3</div>
+                <div class="timeline-step">4</div>
+            </div>
+            
+            <div class="step-detail">
+                <div class="step-title">Step 1: Identify Opportunities</div>
+                <p>We monitor your portfolio daily for stocks trading below their purchase price</p>
+                
+                <div class="stock-grid">
+                    <div class="stock-card stock-winner">
+                        <div>AAPL</div>
+                        <div>+8.5%</div>
+                    </div>
+                    <div class="stock-card stock-loser">
+                        <div>META</div>
+                        <div>-12.3%</div>
+                    </div>
+                    <div class="stock-card stock-winner">
+                        <div>MSFT</div>
+                        <div>+5.2%</div>
+                    </div>
+                    <div class="stock-card stock-loser">
+                        <div>NFLX</div>
+                        <div>-8.7%</div>
+                    </div>
+                    <div class="stock-card stock-winner">
+                        <div>GOOGL</div>
+                        <div>+3.1%</div>
+                    </div>
+                    <div class="stock-card stock-loser">
+                        <div>TSLA</div>
+                        <div>-15.4%</div>
+                    </div>
+                </div>
+                
+                <p><strong>Opportunity:</strong> META, NFLX, and TSLA are showing losses we can harvest</p>
+            </div>
+            
+            <div class="step-detail">
+                <div class="step-title">Step 2: Execute the Sale</div>
+                <p>We sell the losing positions to realize the tax loss</p>
+                
+                <div class="action-arrow">⬇️ SELL</div>
+                
+                <div class="stock-grid">
+                    <div class="stock-card stock-loser">
+                        <div>META</div>
+                        <div>SOLD</div>
+                        <div style="font-size: 0.8em;">$12,300 loss</div>
+                    </div>
+                    <div class="stock-card stock-loser">
+                        <div>NFLX</div>
+                        <div>SOLD</div>
+                        <div style="font-size: 0.8em;">$8,700 loss</div>
+                    </div>
+                    <div class="stock-card stock-loser">
+                        <div>TSLA</div>
+                        <div>SOLD</div>
+                        <div style="font-size: 0.8em;">$15,400 loss</div>
+                    </div>
+                </div>
+                
+                <p><strong>Result:</strong> $36,400 in realized losses captured for tax purposes</p>
+            </div>
+            
+            <div class="step-detail">
+                <div class="step-title">Step 3: Immediate Reinvestment</div>
+                <p>Within minutes, we purchase similar companies to maintain market exposure</p>
+                
+                <div class="action-arrow">⬇️ BUY SIMILAR</div>
+                
+                <div class="stock-grid">
+                    <div class="stock-card stock-replacement">
+                        <div>SNAP</div>
+                        <div>NEW</div>
+                        <div style="font-size: 0.8em;">Social Media</div>
+                    </div>
+                    <div class="stock-card stock-replacement">
+                        <div>DIS</div>
+                        <div>NEW</div>
+                        <div style="font-size: 0.8em;">Entertainment</div>
+                    </div>
+                    <div class="stock-card stock-replacement">
+                        <div>F</div>
+                        <div>NEW</div>
+                        <div style="font-size: 0.8em;">Auto/EV</div>
+                    </div>
+                </div>
+                
+                <p><strong>Key:</strong> Similar companies in same sectors - you don't miss market movements</p>
+            </div>
+            
+            <div class="step-detail">
+                <div class="step-title">Step 4: Repurchase Original Stocks (After 31 Days)</div>
+                <p>After the wash sale period, we can buy back the original stocks if desired</p>
+                
+                <div class="before-after">
+                    <div class="portfolio-state before">
+                        <div class="portfolio-title">Before (Day 1)</div>
+                        <div>META, NFLX, TSLA</div>
+                        <div>+ Other S&P 500 stocks</div>
+                        <div style="margin-top: 10px; font-weight: 600;">Market Exposure: 100%</div>
+                    </div>
+                    
+                    <div class="portfolio-state after">
+                        <div class="portfolio-title">After (Day 32+)</div>
+                        <div>META, NFLX, TSLA</div>
+                        <div>+ Other S&P 500 stocks</div>
+                        <div style="margin-top: 10px; font-weight: 600;">Market Exposure: 100%</div>
+                        <div style="color: #27ae60; font-weight: 600;">+ $36,400 Tax Loss</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="benefit-box">
+                <div class="benefit-title">The Result: Best of Both Worlds</div>
+                
+                <div class="benefit-list">
+                    <div class="benefit-item">
+                        <strong>✅ Market Exposure</strong><br>
+                        Never out of the market for more than minutes
+                    </div>
+                    <div class="benefit-item">
+                        <strong>✅ Tax Benefits</strong><br>
+                        $36,400 loss reduces your tax bill
+                    </div>
+                    <div class="benefit-item">
+                        <strong>✅ Portfolio Intact</strong><br>
+                        Same overall allocation and exposure
+                    </div>
+                    <div class="benefit-item">
+                        <strong>✅ Flexibility</strong><br>
+                        Can offset gains from any source
+                    </div>
+                </div>
+            </div>
+            
+            <div class="wash-sale-warning">
+                <div class="wash-sale-title">📋 Important: Wash Sale Rules</div>
+                <p>We must wait 31 days before repurchasing the exact same security. During this time, we hold similar companies in the same sectors to maintain exposure. This is why professional management is crucial - we handle all the compliance automatically.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
