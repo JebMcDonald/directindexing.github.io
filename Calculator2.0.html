@@ -526,66 +526,7 @@
         }
 
         function formatCurrency(num) {
-            return '
-            
-            // Traditional approach - 10% growth
-            const traditionalGrowthRate = 0.10;
-            const traditionalFinalPortfolio = investment * Math.pow(1 + traditionalGrowthRate, years);
-            const traditionalTotalGrowth = traditionalFinalPortfolio - investment;
-            
-            // Direct indexing - slightly lower growth due to performance drag
-            const directGrowthRate = traditionalGrowthRate - performanceDrag;
-            const directFinalPortfolio = investment * Math.pow(1 + directGrowthRate, years);
-            const directTotalGrowth = directFinalPortfolio - investment;
-            const performanceImpact = directFinalPortfolio - traditionalFinalPortfolio;
-            
-            // Traditional approach calculations
-            const tradCapitalGains = (cashNeed / traditionalFinalPortfolio) * traditionalTotalGrowth;
-            const tradTax = tradCapitalGains * 0.20;
-            const tradCashAfterTax = cashNeed - tradTax;
-            
-            // Direct indexing calculations
-            const totalLossesHarvested = investment * lossRate * years;
-            const directCapitalGains = Math.max(0, (cashNeed / directFinalPortfolio) * directTotalGrowth - totalLossesHarvested);
-            const directTax = directCapitalGains * 0.20;
-            const directCashAfterTax = cashNeed - directTax;
-            
-            const totalSavings = directCashAfterTax - tradCashAfterTax;
-            const savingsPercentage = (totalSavings / tradCashAfterTax * 100);
-
-            // Update traditional calculations
-            document.getElementById('trad-initial').textContent = formatCurrency(investment);
-            document.getElementById('trad-years').textContent = years;
-            document.getElementById('trad-portfolio').textContent = formatCurrency(traditionalFinalPortfolio);
-            document.getElementById('trad-cash-need').textContent = formatCurrency(cashNeed);
-            document.getElementById('trad-gains').textContent = formatCurrency(tradCapitalGains);
-            document.getElementById('trad-tax').textContent = formatCurrency(tradTax);
-            document.getElementById('trad-final').textContent = formatCurrency(tradCashAfterTax);
-
-            // Update direct indexing calculations
-            document.getElementById('direct-initial').textContent = formatCurrency(investment);
-            document.getElementById('direct-years').textContent = years;
-            document.getElementById('direct-portfolio').textContent = formatCurrency(directFinalPortfolio);
-            document.getElementById('performance-impact').textContent = formatCurrency(performanceImpact);
-            document.getElementById('direct-losses').textContent = formatCurrency(totalLossesHarvested);
-            document.getElementById('direct-cash-need').textContent = formatCurrency(cashNeed);
-            document.getElementById('direct-gains').textContent = formatCurrency(directCapitalGains);
-            document.getElementById('direct-tax').textContent = formatCurrency(directTax);
-            document.getElementById('direct-final').textContent = formatCurrency(directCashAfterTax);
-
-            // Update final comparison and results
-            document.getElementById('resultYears').textContent = years;
-            document.getElementById('final-traditional').textContent = formatCurrency(tradCashAfterTax);
-            document.getElementById('final-direct').textContent = formatCurrency(directCashAfterTax);
-            document.getElementById('total-savings').textContent = formatCurrency(totalSavings);
-            document.getElementById('savings-percentage').textContent = savingsPercentage.toFixed(1) + '%';
-        }
-
-        // Initial calculation
-        calculate();
-    </script>
-</body>
-</html> + formatNumber(Math.round(num));
+            return '$' + formatNumber(Math.round(num));
         }
 
         function parseCurrency(str) {
@@ -594,66 +535,7 @@
 
         function formatAndCalculate(input) {
             const value = parseCurrency(input.value);
-            input.value = '
-            
-            // Traditional approach - 10% growth
-            const traditionalGrowthRate = 0.10;
-            const traditionalFinalPortfolio = investment * Math.pow(1 + traditionalGrowthRate, years);
-            const traditionalTotalGrowth = traditionalFinalPortfolio - investment;
-            
-            // Direct indexing - slightly lower growth due to performance drag
-            const directGrowthRate = traditionalGrowthRate - performanceDrag;
-            const directFinalPortfolio = investment * Math.pow(1 + directGrowthRate, years);
-            const directTotalGrowth = directFinalPortfolio - investment;
-            const performanceImpact = directFinalPortfolio - traditionalFinalPortfolio;
-            
-            // Traditional approach calculations
-            const tradCapitalGains = (cashNeed / traditionalFinalPortfolio) * traditionalTotalGrowth;
-            const tradTax = tradCapitalGains * 0.20;
-            const tradCashAfterTax = cashNeed - tradTax;
-            
-            // Direct indexing calculations
-            const totalLossesHarvested = investment * lossRate * years;
-            const directCapitalGains = Math.max(0, (cashNeed / directFinalPortfolio) * directTotalGrowth - totalLossesHarvested);
-            const directTax = directCapitalGains * 0.20;
-            const directCashAfterTax = cashNeed - directTax;
-            
-            const totalSavings = directCashAfterTax - tradCashAfterTax;
-            const savingsPercentage = (totalSavings / tradCashAfterTax * 100);
-
-            // Update traditional calculations
-            document.getElementById('trad-initial').textContent = formatCurrency(investment);
-            document.getElementById('trad-years').textContent = years;
-            document.getElementById('trad-portfolio').textContent = formatCurrency(traditionalFinalPortfolio);
-            document.getElementById('trad-cash-need').textContent = formatCurrency(cashNeed);
-            document.getElementById('trad-gains').textContent = formatCurrency(tradCapitalGains);
-            document.getElementById('trad-tax').textContent = formatCurrency(tradTax);
-            document.getElementById('trad-final').textContent = formatCurrency(tradCashAfterTax);
-
-            // Update direct indexing calculations
-            document.getElementById('direct-initial').textContent = formatCurrency(investment);
-            document.getElementById('direct-years').textContent = years;
-            document.getElementById('direct-portfolio').textContent = formatCurrency(directFinalPortfolio);
-            document.getElementById('performance-impact').textContent = formatCurrency(performanceImpact);
-            document.getElementById('direct-losses').textContent = formatCurrency(totalLossesHarvested);
-            document.getElementById('direct-cash-need').textContent = formatCurrency(cashNeed);
-            document.getElementById('direct-gains').textContent = formatCurrency(directCapitalGains);
-            document.getElementById('direct-tax').textContent = formatCurrency(directTax);
-            document.getElementById('direct-final').textContent = formatCurrency(directCashAfterTax);
-
-            // Update final comparison and results
-            document.getElementById('resultYears').textContent = years;
-            document.getElementById('final-traditional').textContent = formatCurrency(tradCashAfterTax);
-            document.getElementById('final-direct').textContent = formatCurrency(directCashAfterTax);
-            document.getElementById('total-savings').textContent = formatCurrency(totalSavings);
-            document.getElementById('savings-percentage').textContent = savingsPercentage.toFixed(1) + '%';
-        }
-
-        // Initial calculation
-        calculate();
-    </script>
-</body>
-</html> + value.toLocaleString();
+            input.value = '$' + value.toLocaleString();
             calculate();
         }
 
