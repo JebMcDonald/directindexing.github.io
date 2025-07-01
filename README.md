@@ -13,3 +13,6 @@ Direct Indexing Tools
 
 
 [Calculator 2.0](https://jebmcdonald.github.io/directindexing.github.io/Calculator2.0.html)
+
+
+[Direct Indexing Tools Website](https://jebmcdonald.github.io/directindexing.github.io/Homepage.html)
