@@ -10,3 +10,6 @@ Direct Indexing Tools
 
 
 [Loss Process Visualization](https://jebmcdonald.github.io/directindexing.github.io/LossProcess.html)
+
+
+[Calculator 2.0](https://jebmcdonald.github.io/directindexing.github.io/Calculator2.0.html)
