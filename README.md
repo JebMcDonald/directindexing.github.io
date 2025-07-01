@@ -7,3 +7,6 @@ Direct Indexing Tools
 
 
 [Direct Indexing Infographic](https://jebmcdonald.github.io/directindexing.github.io/Infographic.html)
+
+
+[Loss Process Visualization](https://jebmcdonald.github.io/directindexing.github.io/LossProcess.html)
